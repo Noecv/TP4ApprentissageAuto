@@ -43,37 +43,35 @@ y_prediction = LR.predict(x_test)
 
 score=r2_score(y_test,y_prediction)
 coefs = LR.coef_
-print('r2 score is', score)
-print('coefs', coefs)
-print(idcolumn)
+print('LR r2 score is', score)
+print('\nLR coefs are \n', coefs)
+print('\n',idcolumn)
 
 
-a = x[:,-1]
-b = x[:,1]
-c = x[:,6]
+a = x[:,-1]*LR.coef_[-1]
+b = x[:,1]*LR.coef_[1]
+c = x[:,-2]*LR.coef_[-2]
 
 
 
 new_x = np.concatenate(([a],[b],[c]))
 print("shape", len(new_x.T), new_x.T[0])
 WCSS = []
-size = 20
-for i in range(1,20):
+size = 10
+for i in range(1,size):
     model = KMeans(n_clusters = i, init = 'k-means++')
     model.fit(new_x.T)
     WCSS.append(model.inertia_)
 fig = plt.figure(figsize = (7,7))
-plt.plot(range(1,20),WCSS, linewidth=4, markersize=12,marker='o',color = 'green')
-plt.xticks(np.arange(20))
+plt.plot(range(1,size),WCSS, linewidth=4, markersize=12,marker='o',color = 'green')
+plt.xticks(np.arange(size))
 plt.xlabel("Number of clusters")
 plt.ylabel("WCSS")
-plt.show() #elbow at 3
+plt.show() #elbow at 4
 
 
 model = KMeans(n_clusters = 4, init = "k-means++", max_iter = 300, n_init = 10, random_state = 0)
 y_clusters = model.fit_predict(new_x.T)
-print(len(new_x), len(new_x[0]))
-print(y_clusters)
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
@@ -81,13 +79,13 @@ ax = fig.add_subplot(projection='3d')
 
 # For each set of style and range settings, plot n random points in the box
 # defined by x in [23, 32], y in [0, 100], z in [zlow, zhigh].
-color = ['yellow','green','red', 'orange']
+color = ['green','red','yellow', 'orange']
 for i in range(len(new_x[0])):
     ax.scatter(new_x[0][i], new_x[1][i], new_x[2][i], lw=0.2, marker='o', c = color[y_clusters[i]])
 
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
+ax.set_xlabel('Alcohol')
+ax.set_ylabel('Volatile Acidity')
+ax.set_zlabel('Sulphates')
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
@@ -104,10 +102,10 @@ indicebis = [0,0,0,0,0,1,2,3,3,3]
 for i in range(len(a)):
     ax.scatter(new_x[0][i], new_x[1][i], new_x[2][i], marker='o', c = color1[indicebis[int(y[i])]])
 
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
-
+ax.set_xlabel('Alcohol')
+ax.set_ylabel('Volatile Acidity')
+ax.set_zlabel('Sulphates')
+plt.legend()
 plt.show() 
 
 
